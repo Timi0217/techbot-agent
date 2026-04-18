@@ -178,5 +178,17 @@ def chat(req: ChatRequest):
         response = _call_llm(system, req.message, context)
         return {"response": response}
     except Exception as e:
-        log.error("LLM call failed: %s", e)
+        log.error("LLM call failed: %s", e, exc_info=True)
         return {"response": f"I'm sorry, I encountered an error processing your request. Please try again or contact support at support@techbot.example.com."}
+
+
+@app.get("/debug")
+def debug():
+    """Debug endpoint — shows config status (non-sensitive)."""
+    return {
+        "deepseek_key_set": bool(DEEPSEEK_API_KEY),
+        "deepseek_key_length": len(DEEPSEEK_API_KEY),
+        "deepseek_key_prefix": DEEPSEEK_API_KEY[:8] + "..." if DEEPSEEK_API_KEY else "not-set",
+        "deepseek_url": DEEPSEEK_API_URL,
+        "deepseek_model": DEEPSEEK_MODEL,
+    }
